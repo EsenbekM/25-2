@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from keyboards import client_kb
+from database.bot_db import sql_command_insert
 
 
 class FSMAdmin(StatesGroup):
@@ -73,7 +74,7 @@ async def load_photo(message: types.Message, state: FSMContext):
 
 async def submit(message: types.Message, state: FSMContext):
     if message.text.lower() == "да":
-        # Запись в БД
+        await sql_command_insert(state)
         await state.finish()
     elif message.text.lower() == "заново":
         await FSMAdmin.name.set()
