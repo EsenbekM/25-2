@@ -12,7 +12,7 @@ async def start_handler(message: types.Message):
                            reply_markup=start_markup)
     # await message.answer("This is an answer method")
     # await message.reply("This is a reply method")
-
+    # CRUD
 
 async def info_handler(message: types.Message):
     await message.answer("Сам разбирайся!")
