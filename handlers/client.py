@@ -1,8 +1,9 @@
 from aiogram import types, Dispatcher
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from config import bot, ADMINS
 from keyboards.client_kb import start_markup
 from database.bot_db import sql_command_random, sql_command_delete
+from parser.news import parser
 
 
 # @dp.message_handler(commands=['start', 'help'])
@@ -67,6 +68,18 @@ async def complete_delete(call: types.CallbackQuery):
     await bot.delete_message(call.from_user.id, call.message.message_id)
 
 
+async def get_news(message: types.Message):
+    news = parser()
+    for i in news:
+        await message.answer(
+            f"{i['link']}\n\n"
+            f"<b><a href='{i['link']}'>{i['title']}</a></b>\n"
+            f"{i['description']}\n"
+            f"{i['date_from_html']}\n",
+            parse_mode=ParseMode.HTML
+        )
+
+
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(start_handler, commands=['start', 'help'])
     dp.register_message_handler(quiz_1, commands=['quiz'])
@@ -74,3 +87,4 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(get_random_user, commands=['get'])
     dp.register_callback_query_handler(complete_delete,
                                        lambda call: call.data and call.data.startswith("delete "))
+    dp.register_message_handler(get_news, commands=['news'])
